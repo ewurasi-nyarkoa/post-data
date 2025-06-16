@@ -1,35 +1,47 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Post } from '../models/post.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  private postsData =new BehaviorSubject<PostService[]>([]);
+  private postsData = new BehaviorSubject<Post[]>([]);
   readonly postData$ = this.postsData.asObservable();
 
+  private readonly baseUrl = 'https://jsonplaceholder.typicode.com/posts';
+
   constructor(private http: HttpClient) {}
-  // use the get method to fetch data from an API
-  getPosts(){
-    return this.http.get<PostService[]>('https://jsonplaceholder.typicode.com/posts');
+
+  // Get posts from API
+  getPosts(): Observable<Post[]> {
+    return this.http.get<Post[]>(`${this.baseUrl}?_start=1&_limit=10`);
   }
 
-// use the post method to send data  to the api
-postData(data:PostService[]){
-  return this.http.post<PostService[]>('https://jsonplaceholder.typicode.com/posts', data);
+  // Create new post
+  createPost(data: Omit<Post, 'id'>): Observable<Post> {
+    return this.http.post<Post>(this.baseUrl, data);
+  }
+
+  // Update existing post
+  updatePost(id: number, data: Partial<Post>): Observable<Post> {
+    return this.http.put<Post>(`${this.baseUrl}/${id}`, data);
+  }
+
+  // Delete post
+  deletePost(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  // Get single post
+  getPost(id: number): Observable<Post> {
+    return this.http.get<Post>(`${this.baseUrl}/${id}`);
+  }
+
+  // Update local posts data
+  updatePostsData(posts: Post[]): void {
+    this.postsData.next(posts);
+  }
+
 }
-
-// use the put method to update data in the api
-  putData(id: number, data: any) {
-    return this.http.put(`https://jsonplaceholder.typicode.com/posts/${id}`, data); 
-  }
-
-// use the delete method to delete data from the api
-  deleteData(id: number) {  
-    return this.http.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
-  }
-
-}
-
-

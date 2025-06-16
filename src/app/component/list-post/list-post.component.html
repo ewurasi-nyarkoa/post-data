@@ -1,1 +1,104 @@
-<p>list-post works!</p>
+<div class="post-list">
+
+  <div class="post-list__header">
+    <div class="post-list__title-section">
+      <h1 class="post-list__title">Posts</h1>
+      <p class="post-list__subtitle">Manage and organize your posts</p>
+    </div>
+    
+    <button 
+      class="post-list__create-btn"
+      (click)="onCreateNew()">
+      <svg class="post-list__create-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <span>New Post</span>
+    </button>
+  </div>
+
+
+  <div class="post-list__search">
+    <div class="post-list__search-wrapper">
+      <div class="post-list__search-icon">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <input
+        type="text"
+        placeholder="Search posts..."
+        [(ngModel)]="searchTerm"
+        class="post-list__search-input"
+      />
+    </div>
+  </div>
+
+
+  <div *ngIf="isLoading" class="post-list__loading">
+    <div class="post-list__spinner"></div>
+    <p>Loading posts...</p>
+  </div>
+
+ 
+  <div *ngIf="!isLoading && filteredPosts.length === 0" class="post-list__empty">
+    <div class="post-list__empty-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <h3 class="post-list__empty-title">
+      {{ searchTerm ? 'No posts found' : 'No posts yet' }}
+    </h3>
+    <p class="post-list__empty-text">
+      {{ searchTerm 
+        ? 'Try adjusting your search terms' 
+        : 'Get started by creating your first post' }}
+    </p>
+    <button 
+      *ngIf="!searchTerm"
+      (click)="onCreateNew()"
+      class="post-list__empty-btn">
+      <svg class="post-list__empty-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <span>Create First Post</span>
+    </button>
+  </div>
+
+
+  <div *ngIf="!isLoading && filteredPosts.length > 0" class="post-list__grid">
+    <app-post-card
+      *ngFor="let post of filteredPosts; trackBy: trackByPostId"
+      [post]="post"
+      (view)="onViewPost($event)"
+      (edit)="onEditPost($event)"
+      (delete)="onDeletePost($event)">
+    </app-post-card>
+  </div>
+
+ 
+  <div *ngIf="!isLoading && posts.length > 0" class="post-list__stats">
+    <div class="post-list__stats-grid">
+      <div class="post-list__stat">
+        <div class="post-list__stat-number post-list__stat-number--primary">
+          {{ posts.length }}
+        </div>
+        <div class="post-list__stat-label">Total Posts</div>
+      </div>
+      <div class="post-list__stat">
+        <div class="post-list__stat-number post-list__stat-number--success">
+          {{ uniqueUserCount }}
+        </div>
+        <div class="post-list__stat-label">Active Users</div>
+      </div>
+      <div class="post-list__stat">
+        <div class="post-list__stat-number post-list__stat-number--purple">
+          {{ filteredPosts.length }}
+        </div>
+        <div class="post-list__stat-label">Filtered Results</div>
+      </div>
+    </div>
+  </div>
+</div>
