@@ -112,7 +112,10 @@
     color: #111827;
     margin: 0 0 12px 0;
     line-height: 1.4;
-    text-transform: capitalize;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   &__body {
@@ -127,13 +130,13 @@
   }
 }
 
-// Responsive design
+
 @media (max-width: 768px) {
   .post-card {
     padding: 16px;
 
     &__actions {
-      opacity: 1; // Always show on mobile
+      opacity: 1; 
     }
 
     &__title {
