@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Post, Comment } from '../models/post.interface';
-import { environment } from '../component/environments/environment.development';
-import { environmentProd } from '../component/environments/environment.production';
-import { environmentStage } from '../component/environments/environment.staging';
+import { environment } from '../component/environments/environment';
+// import { environmentProd } from '../component/environments/environment.production';
+// import { environmentStage } from '../component/environments/environment.staging';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +13,15 @@ export class PostService {
   private postsData = new BehaviorSubject<Post[]>([]);
   readonly postData$ = this.postsData.asObservable();
 
-
-  private readonly baseUrlDevelopment = environment.apiUrl;
-private readonly baseUrlProduction = environmentProd.apiUrl;
-private readonly baseUrlStaging = environmentStage.apiUrl;
+  private readonly baseUrl = environment.apiUrl;
 
 
-private readonly baseUrl = environment.production ? this.baseUrlProduction : environmentStage.production ? this.baseUrlStaging : this.baseUrlDevelopment;
+//   private readonly baseUrlDevelopment = environment.apiUrl;
+// private readonly baseUrlProduction = environmentProd.apiUrl;
+// private readonly baseUrlStaging = environmentStage.apiUrl;
+
+
+// private readonly baseUrl = environment.production ? this.baseUrlProduction : environmentStage.production ? this.baseUrlStaging : this.baseUrlDevelopment;
 
 
 
