@@ -49,6 +49,7 @@ export class DetailPostComponent implements OnInit {
     this.postService.getPost(id).subscribe({
       next: (post) => {
         this.post = post;
+        this.fetchComments();
         this.isLoading = false;
       },
       error: (error) => {

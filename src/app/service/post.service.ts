@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Post, Comment } from '../models/post.interface';
+import { environment } from '../component/environments/environment';
+// import { environmentProd } from '../component/environments/environment.production';
+// import { environmentStage } from '../component/environments/environment.staging';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +13,19 @@ export class PostService {
   private postsData = new BehaviorSubject<Post[]>([]);
   readonly postData$ = this.postsData.asObservable();
 
-  private readonly baseUrl = 'https://jsonplaceholder.typicode.com/posts';
+  private readonly baseUrl = environment.apiUrl;
+
+
+//   private readonly baseUrlDevelopment = environment.apiUrl;
+// private readonly baseUrlProduction = environmentProd.apiUrl;
+// private readonly baseUrlStaging = environmentStage.apiUrl;
+
+
+// private readonly baseUrl = environment.production ? this.baseUrlProduction : environmentStage.production ? this.baseUrlStaging : this.baseUrlDevelopment;
+
+
+
+
 
   constructor(private http: HttpClient) {}
 
@@ -41,22 +56,9 @@ export class PostService {
 
 
   fetchComments(postId: number): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`);
+    return this.http.get<Comment[]>(`${this.baseUrl}/${postId}/comments`);
   }
 
-    // fetchComments(): void {
-    // this.apiClient
-    //   .get<Comment[]>(`${API_BASE_URL}/posts/${this.postId}/comments`)
-    //   .subscribe({
-    //     next: (data) => {
-    //       this.comments = data;
-    //       this.loading = false;
-    //     },
-    //     error: (err) => {
-    //       this.error = 'Failed to load comments';
-    //       this.loading = false;
-    //     },
-    //   });
 
   // Update local posts data
   updatePostsData(posts: Post[]): void {
