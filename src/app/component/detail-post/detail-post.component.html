@@ -1,1 +1,121 @@
-<p>detail-post works!</p>
+<!-- Loading State -->
+<div *ngIf="isLoading" class="post-detail__loading">
+  <div class="post-detail__spinner"></div>
+  <p>Loading post...</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !isLoading" class="post-detail__error">
+  <div class="post-detail__error-icon">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+    </svg>
+  </div>
+  <h2>{{ error }}</h2>
+  <button (click)="onBack()" class="post-detail__error-btn">
+    Go Back
+  </button>
+</div>
+
+<!-- Post Content -->
+<div *ngIf="post && !isLoading" class="post-detail">
+  <div class="post-detail__container">
+    
+    <!-- Header -->
+    <div class="post-detail__header">
+      <div class="post-detail__header-content">
+        <button 
+          (click)="onBack()" 
+          class="post-detail__back-btn">
+          <svg class="post-detail__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span>Back to Posts</span>
+        </button>
+        
+        <div class="post-detail__actions">
+          <button 
+            (click)="onEdit()" 
+            class="post-detail__action-btn post-detail__action-btn--edit">
+            <svg class="post-detail__action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            <span>Edit</span>
+          </button>
+          
+          <button 
+            (click)="onDelete()" 
+            class="post-detail__action-btn post-detail__action-btn--delete">
+            <svg class="post-detail__action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="post-detail__meta">
+        <div class="post-detail__meta-item">
+          <svg class="post-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>User {{ post.userId }}</span>
+        </div>
+        
+        <div class="post-detail__meta-item">
+          <svg class="post-detail__meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-7 0h8m-8 0l1 12a1 1 0 001 1h6a1 1 0 001-1L16 7"></path>
+          </svg>
+          <span>Post #{{ post.id }}</span>
+        </div>
+      </div>
+    </div>
+    
+ 
+    <div class="post-detail__content">
+      <h1 class="post-detail__title">
+        {{ formatTitle(post.title) }}
+      </h1>
+      
+      <div class="post-detail__body">
+        <p class="post-detail__text">{{ post.body }}</p>
+          <h3>Comments</h3>
+  <ul>
+    <li *ngFor="let comment of comments">
+      <strong>{{ comment.name }}</strong> ({{ comment.email }})
+      <p>{{ comment.body }}</p>
+    </li>
+  </ul>
+      </div>
+    </div>
+    
+  
+    <div class="post-detail__footer">
+      <button 
+        (click)="onEdit()" 
+        class="post-detail__footer-btn post-detail__footer-btn--edit">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+        Edit Post
+      </button>
+      
+      <button 
+        (click)="onDelete()" 
+        class="post-detail__footer-btn post-detail__footer-btn--delete">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        Delete Post
+      </button>
+    </div>
+  </div>
+</div>

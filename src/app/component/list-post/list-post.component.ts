@@ -72,7 +72,7 @@ export class ListPostComponent implements OnInit {
   onViewPost(post: Post): void {
     console.log('Viewing post:', post);
     // Navigate to post detail page
-    // this.router.navigate(['/posts', post.id]);
+    this.router.navigate(['/posts', post.id]);
   }
 
   onEditPost(post: Post): void {

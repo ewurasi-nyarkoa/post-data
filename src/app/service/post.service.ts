@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Post } from '../models/post.interface';
+import { Post, Comment } from '../models/post.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,25 @@ export class PostService {
   getPost(id: number): Observable<Post> {
     return this.http.get<Post>(`${this.baseUrl}/${id}`);
   }
+
+
+  fetchComments(postId: number): Observable<Comment[]> {
+    return this.http.get<Comment[]>(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`);
+  }
+
+    // fetchComments(): void {
+    // this.apiClient
+    //   .get<Comment[]>(`${API_BASE_URL}/posts/${this.postId}/comments`)
+    //   .subscribe({
+    //     next: (data) => {
+    //       this.comments = data;
+    //       this.loading = false;
+    //     },
+    //     error: (err) => {
+    //       this.error = 'Failed to load comments';
+    //       this.loading = false;
+    //     },
+    //   });
 
   // Update local posts data
   updatePostsData(posts: Post[]): void {
