@@ -1,59 +1,113 @@
-# PostData
+# Angular Posts Manager
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.13.
+A modern Angular application for managing posts with authentication, caching, and state management.
 
-## Development server
+## Project Description
 
-To start a local development server, run:
+This application demonstrates a robust Angular architecture for managing posts from JSONPlaceholder API. It features:
 
-```bash
-ng serve
+- Token-based authentication
+- HTTP request caching
+- State management
+- Route protection
+- Unit testing
+
+## Setup and Run Instructions
+
+### Prerequisites
+- Node.js 
+- npm 
+
+### Installation
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/angular-posts-manager.git
+   cd angular-posts-manager
+   ```
+
+2. Install dependencies
+   ```
+   npm install
+   ```
+
+3. Start the development server
+   ```
+   npm start
+   ```
+
+4. Open your browser to `http://localhost:4200`
+
+### Login Credentials
+- Username: `admin`
+- Password: `password`
+
+## Available NPM Scripts
+
+- `npm start`: Start the development server
+- `npm run build`: Build the application for production
+- `npm run watch`: Build and watch for changes
+- `npm test`: Run unit tests
+- `npm run test:coverage`: Run tests with coverage report
+- `npm run lint`: Run linting
+- `npm run e2e`: Run end-to-end tests
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── component/           # UI components
+│   │   ├── create-post/     # Create post component
+│   │   ├── detail-post/     # Post details component
+│   │   ├── edit-post/       # Edit post component
+│   │   ├── list-post/       # Post listing component
+│   │   └── post-card/       # Reusable post card component
+│   ├── guards/              # Route guards
+│   │   └── auth.guard.ts    # Authentication guard
+│   ├── interceptors/        # HTTP interceptors
+│   │   └── auth.interceptor.ts # Authentication interceptor
+│   ├── models/              # Data models
+│   │   ├── api-constants.ts # API endpoints and cache keys
+│   │   ├── post.interface.ts # Post model
+│   │   └── service-models.ts # Service interfaces
+│   ├── service/             # Services
+│   │   ├── auth.service.ts  # Authentication service
+│   │   └── post.service.ts  # API client service
+│   ├── app.component.ts     # Root component
+│   ├── app.config.ts        # App configuration
+│   └── app.routes.ts        # Route definitions
+└── assets/                  # Static assets
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Key Features
 
-## Code scaffolding
+### Authentication
+- Token-based authentication stored in localStorage
+- Protected routes for create and edit operations
+- Login/logout functionality with UI feedback
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### API Client
+- Centralized HTTP request handling
+- Request caching with configurable durations
+- Cache invalidation on data mutations
+- Error handling and logging
 
-```bash
-ng generate component component-name
-```
+### State Management
+- BehaviorSubject-based state management
+- Observable data streams
+- Optimistic UI updates
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Caching
+- GET requests are cached with configurable durations
+- Automatic cache expiration
+- Cache invalidation on POST/PUT/DELETE operations
+- Local persistence of edited posts for JSONPlaceholder API
 
-```bash
-ng generate --help
-```
+### Testing
+- Unit tests for services, guards, and components
+- Mocked dependencies for isolated testing
+- Coverage reporting
 
-## Building
+## Notes
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This application uses JSONPlaceholder as a fake REST API. Since JSONPlaceholder doesn't actually persist changes, the application implements local storage to simulate persistence between sessions.
