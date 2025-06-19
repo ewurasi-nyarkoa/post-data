@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<{token: string, user: User}> {
-    // Mock login - in real app, this would call an API
+
     if (username === 'admin' && password === 'password') {
       const mockUser: User = { id: 1, username: 'admin', email: 'admin@example.com' };
       const mockToken = 'mock-jwt-token-' + Math.random().toString(36).substring(2);

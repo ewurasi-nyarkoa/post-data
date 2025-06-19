@@ -8,12 +8,12 @@ import { CACHE_KEYS, CACHE_DURATIONS } from '../models/api-constants';
   providedIn: 'root',
 })
 export class ApiClientService {
-  // Private properties
+
   private readonly defaultCacheDuration = CACHE_DURATIONS.LONG;
   private errorSubject = new BehaviorSubject<ErrorMessage | null>(null);
   private stateSubjects = new Map<string, BehaviorSubject<any>>();
   
-  // Public observables
+
   error$ = this.errorSubject.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -43,7 +43,7 @@ export class ApiClientService {
     subject.next(mergedData);
   }
 
-  // Add item to state (for new items)
+ 
   addToState<T extends { id: number }>(stateKey: string, item: T, addToTop: boolean = true): void {
     const subject = this.getStateSubject<T>(stateKey);
     const currentData = subject.value;
@@ -51,26 +51,25 @@ export class ApiClientService {
     subject.next(newData);
   }
 
-  // Update item in state
+
   updateInState<T extends { id: number }>(stateKey: string, updatedItem: T): void {
     const subject = this.getStateSubject<T>(stateKey);
     const currentData = subject.value;
     
-    // Create a completely new array with the updated item
+   
     const newData = currentData.map(item => {
       if (item.id === updatedItem.id) {
         return { ...updatedItem };
       }
-      return { ...item }; // Create new references for all items to ensure change detection
+      return { ...item }; 
     });
     
-    // Force a new array reference to trigger change detection
+
     subject.next(newData);
     
     this.updateLocalCache(updatedItem);
   }
 
-  // Remove item from state
   removeFromState<T extends { id: number }>(stateKey: string, itemId: number): void {
     const subject = this.getStateSubject<T>(stateKey);
     const currentData = subject.value;
@@ -78,27 +77,22 @@ export class ApiClientService {
     subject.next(newData);
   }
 
-  // Get current state data synchronously
+
   getCurrentState<T>(stateKey: string): T[] {
     return this.getStateSubject<T>(stateKey).value;
   }
 
-  // Find item by ID in state
+
   findInState<T extends { id: number }>(stateKey: string, itemId: number): T | undefined {
     return this.getCurrentState<T>(stateKey).find(item => item.id === itemId);
   }
 
-  /**
-   * HTTP REQUEST METHODS
-   */
-  
-  // GET with caching support and state management
   get<T>(url: string, cacheConfig?: CacheConfig, stateConfig?: StateConfig<T>): Observable<T> {
-    // Check cache first if caching is enabled
+   
     if (cacheConfig) {
       const cachedData = this.getFromCache<T>(cacheConfig.key);
       if (cachedData) {
-        // Update state if configured
+       
         if (stateConfig?.updateState && Array.isArray(cachedData)) {
           if (stateConfig.mergeData) {
             this.mergeIntoState(stateConfig.stateKey, cachedData as any[]);
@@ -106,7 +100,7 @@ export class ApiClientService {
             this.setState(stateConfig.stateKey, cachedData as any[]);
           }
         }
-        // Return cached data but still make API call to refresh cache
+      
         setTimeout(() => this.refreshCache(url, cacheConfig), 0);
         return new Observable(observer => {
           observer.next(cachedData);
@@ -117,11 +111,11 @@ export class ApiClientService {
 
     return this.http.get<T>(url).pipe(
       tap((data) => {
-        // Cache the data if caching is enabled
+       
         if (cacheConfig) {
           this.setCache(cacheConfig.key, data, cacheConfig.duration);
         }
-        // Update state if configured
+      
         if (stateConfig?.updateState && Array.isArray(data)) {
           if (stateConfig.mergeData) {
             this.mergeIntoState(stateConfig.stateKey, data as any[]);
@@ -135,7 +129,7 @@ export class ApiClientService {
     );
   }
 
-  // GET with pagination support
+
   getPaginated<T>(url: string, page: number = 1, limit: number = 10, cacheConfig?: CacheConfig, stateConfig?: StateConfig<T>): Observable<T> {
     const start = (page - 1) * limit;
     const params = new HttpParams()
@@ -150,15 +144,15 @@ export class ApiClientService {
     );
   }
 
-  // POST with cache invalidation and state management
+
   post<T, R extends { id: number }>(url: string, body: T, cacheKeysToInvalidate?: string[], stateConfig?: StateConfig<R>): Observable<R> {
     return this.http.post<R>(url, body).pipe(
       tap((response) => {
-        // Invalidate related cache entries
+       
         if (cacheKeysToInvalidate) {
           this.invalidateCache(cacheKeysToInvalidate);
         }
-        // Add to state if configured (typically for newly created items)
+       
         if (stateConfig?.updateState) {
           this.addToState(stateConfig.stateKey, response, stateConfig.addToTop ?? true);
         }
@@ -168,21 +162,21 @@ export class ApiClientService {
     );
   }
 
-  // PUT with cache invalidation and state management
+  
   put<T, R = T>(url: string, body: T, cacheKeysToInvalidate?: string[], stateConfig?: StateConfig<R>): Observable<R> {
     return this.http.put<R>(url, body).pipe(
       tap((response) => {
-        // Store edited post in localStorage to persist changes
+   
         if (response && typeof response === 'object' && 'id' in response) {
           this.saveEditedPost(response);
         }
         
-        // Invalidate related cache entries
+     
         if (cacheKeysToInvalidate) {
           this.invalidateCache(cacheKeysToInvalidate);
         }
         
-        // Update in state if configured
+     
         if (stateConfig?.updateState && response && typeof response === 'object' && 'id' in response) {
           this.updateInState(stateConfig.stateKey, response as any);
         }
@@ -193,15 +187,15 @@ export class ApiClientService {
     );
   }
 
-  // DELETE with cache invalidation and state management
+
   delete(url: string, cacheKeysToInvalidate?: string[], stateConfig?: { stateKey: string; itemId: number }): Observable<void> {
     return this.http.delete<void>(url).pipe(
       tap(() => {
-        // Invalidate related cache entries
+      
         if (cacheKeysToInvalidate) {
           this.invalidateCache(cacheKeysToInvalidate);
         }
-        // Remove from state if configured
+      
         if (stateConfig) {
           this.removeFromState(stateConfig.stateKey, stateConfig.itemId);
         }
@@ -211,11 +205,6 @@ export class ApiClientService {
     );
   }
 
-  /**
-   * CACHE MANAGEMENT METHODS
-   */
-  
-  // Clear all cache entries
   clearAllCache(): void {
     const keys = Object.keys(localStorage);
     keys.forEach(key => {
@@ -228,35 +217,25 @@ export class ApiClientService {
           }
         }
       } catch (error) {
-        // Not a cache item, skip
+      
       }
     });
   }
 
-  /**
-   * ERROR HANDLING METHODS
-   */
-  
-  // Clear current error
+
   clearError(): void {
     this.errorSubject.next(null);
   }
 
-  // Check if there's an active error
   hasError(): boolean {
     return this.errorSubject.value !== null;
   }
 
-  // Get current error
+
   getCurrentError(): ErrorMessage | null {
     return this.errorSubject.value;
   }
 
-  /**
-   * PRIVATE HELPER METHODS
-   */
-  
-  // Get or create a state subject
   private getStateSubject<T>(stateKey: string): BehaviorSubject<T[]> {
     if (!this.stateSubjects.has(stateKey)) {
       this.stateSubjects.set(stateKey, new BehaviorSubject<T[]>([]));
@@ -264,7 +243,7 @@ export class ApiClientService {
     return this.stateSubjects.get(stateKey)!;
   }
 
-  // Set cache data
+
   private setCache<T>(key: string, data: T, duration?: number): void {
     try {
       const cacheData = {
@@ -274,7 +253,7 @@ export class ApiClientService {
       };
       localStorage.setItem(key, JSON.stringify(cacheData));
       
-      // Set up automatic cache expiration
+     
       setTimeout(() => {
         localStorage.removeItem(key);
       }, cacheData.duration);
@@ -283,7 +262,7 @@ export class ApiClientService {
     }
   }
 
-  // Get data from cache
+
   private getFromCache<T>(key: string): T | null {
     try {
       const cached = localStorage.getItem(key);
@@ -292,7 +271,7 @@ export class ApiClientService {
       const cacheData = JSON.parse(cached);
       const now = Date.now();
       
-      // Check if cache is still valid
+  
       if (now - cacheData.timestamp > cacheData.duration) {
         localStorage.removeItem(key);
         return null;
@@ -305,7 +284,7 @@ export class ApiClientService {
     }
   }
 
-  // Refresh cache in background
+
   private refreshCache<T>(url: string, cacheConfig: CacheConfig): void {
     this.http.get<T>(url).pipe(
       tap((data) => {
@@ -318,14 +297,13 @@ export class ApiClientService {
     ).subscribe();
   }
 
-  // Invalidate cache entries
+
   private invalidateCache(keys: string[]): void {
     keys.forEach(key => {
       localStorage.removeItem(key);
     });
   }
 
-  // Save edited post to localStorage
   private saveEditedPost(response: any): void {
     try {
       const editedPostsKey = CACHE_KEYS.EDITED_POSTS;
@@ -341,10 +319,10 @@ export class ApiClientService {
     }
   }
 
-  // Update local cache with edited item
+
   private updateLocalCache<T extends { id: number }>(updatedItem: T): void {
     try {
-      // Update paginated cache
+   
       const cacheKey = `${CACHE_KEYS.getPostPageKey(1)}_p1_l10`;
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
@@ -361,7 +339,7 @@ export class ApiClientService {
     }
   }
 
-  // Apply local edits to data from API
+
   private applyLocalEdits<T>(data: any, stateConfig?: StateConfig<T>): void {
     if (!Array.isArray(data)) return;
     
@@ -372,7 +350,7 @@ export class ApiClientService {
       
       if (Object.keys(editedPosts).length === 0) return;
       
-      // Apply local edits to the data
+ 
       const updatedData = data.map((item: any) => {
         if (item.id && editedPosts[item.id]) {
           return { ...item, ...editedPosts[item.id] };
@@ -380,7 +358,7 @@ export class ApiClientService {
         return item;
       });
       
-      // Update the state with our locally edited data
+  
       if (stateConfig?.stateKey) {
         this.setState(stateConfig.stateKey, updatedData as any[]);
       }
@@ -389,7 +367,7 @@ export class ApiClientService {
     }
   }
 
-  // Error handler factory
+
   private handleError(operation: string, url: string) {
     return (error: HttpErrorResponse) => {
       console.error(`${operation} request failed:`, url, error);
@@ -403,7 +381,7 @@ export class ApiClientService {
     };
   }
 
-  // Format error message
+
   private getErrorMessage(error: HttpErrorResponse): string {
     if (error.status === 0) {
       return 'Network error - please check your connection';

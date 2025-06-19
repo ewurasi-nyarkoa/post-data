@@ -19,15 +19,14 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./list-post.component.scss']
 })
 export class ListPostComponent implements OnInit, OnDestroy {
-  // Public properties
+
   posts: Post[] = [];
   searchTerm: string = '';
   isLoading: boolean = false;
   currentPage = 1;
   pageSize = 10;
   totalItems = 100;
-  
-  // Private subscriptions
+
   private postsSubscription!: Subscription;
   private newPostsSubscription!: Subscription;
   private queryParamsSubscription!: Subscription;
@@ -47,55 +46,45 @@ export class ListPostComponent implements OnInit, OnDestroy {
     this.unsubscribeAll();
   }
 
-  /**
-   * Initialize all subscriptions
-   */
+
   private initializeSubscriptions(): void {
-    // Subscribe to new posts
+
     this.newPostsSubscription = this.apiClient.getState$<Post>(CACHE_KEYS.NEW_POSTS)
       .subscribe(() => this.updateCombinedPosts());
     
-    // Subscribe to paginated posts
+  
     this.postsSubscription = this.apiClient.getState$<Post>(CACHE_KEYS.POSTS)
       .subscribe(() => this.updateCombinedPosts());
     
-    // Check if we need to force refresh (coming from edit page)
+    
     this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       const forceRefresh = !!params['refresh'];
       this.loadPosts(this.currentPage, forceRefresh);
     });
   }
 
-  /**
-   * Unsubscribe from all subscriptions
-   */
   private unsubscribeAll(): void {
     if (this.postsSubscription) this.postsSubscription.unsubscribe();
     if (this.newPostsSubscription) this.newPostsSubscription.unsubscribe();
     if (this.queryParamsSubscription) this.queryParamsSubscription.unsubscribe();
   }
 
-  /**
-   * Combine posts from different sources
-   */
   private updateCombinedPosts(): void {
     const newPosts = this.currentPage === 1 
       ? this.apiClient.getCurrentState<Post>(CACHE_KEYS.NEW_POSTS) 
       : [];
     const paginatedPosts = this.apiClient.getCurrentState<Post>(CACHE_KEYS.POSTS);
     
-    // Create a new array reference to ensure change detection
+  
     this.posts = [...(newPosts || []), ...(paginatedPosts || [])];
   }
 
-  /**
-   * Load posts with pagination
-   */
+ 
   loadPosts(page: number = this.currentPage, forceRefresh: boolean = false): void {
     this.isLoading = true;
     this.currentPage = page;
 
-    // Clear cache if force refresh is requested
+ 
     if (forceRefresh) {
       const cacheKey = `${CACHE_KEYS.getPostPageKey(page)}_p${page}_l${this.pageSize}`;
       localStorage.removeItem(cacheKey);
@@ -122,9 +111,7 @@ export class ListPostComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Filter posts based on search term
-   */
+
   get filteredPosts(): Post[] {
     if (!this.searchTerm.trim()) {
       return this.posts;
@@ -137,15 +124,11 @@ export class ListPostComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Count unique users in the current posts
-   */
   get uniqueUserCount(): number {
     const userIds = new Set(this.posts.map(post => post.userId));
     return userIds.size;
   }
 
-  // Event handlers
   onSearchChange(term: string): void {
     this.searchTerm = term;
   }
@@ -183,7 +166,6 @@ export class ListPostComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
-  // For simplicity, directly log in with hardcoded credentials
   this.authService.login('admin', 'password').subscribe({
     next: () => console.log('Logged in successfully')
   });

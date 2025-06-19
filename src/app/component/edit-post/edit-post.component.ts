@@ -15,7 +15,6 @@ import { API_ENDPOINTS, CACHE_KEYS, CACHE_DURATIONS } from '../../models/api-con
   styleUrl: './edit-post.component.scss'
 })
 export class EditPostComponent implements OnInit {
-  // Public properties
   post: Post = {
     id: 0,
     userId: 1,
@@ -27,7 +26,7 @@ export class EditPostComponent implements OnInit {
   isSubmitting = false;
   apiError: string | null = null;
   
-  // Private properties
+ 
   private isNewPost = false;
 
   constructor(
@@ -40,9 +39,7 @@ export class EditPostComponent implements OnInit {
     this.loadPost();
   }
 
-  /**
-   * Load post data from state or API
-   */
+
   private loadPost(): void {
     const postIdParam = this.route.snapshot.paramMap.get('id');
     
@@ -60,20 +57,18 @@ export class EditPostComponent implements OnInit {
     this.isLoading = true;
     this.apiError = null;
 
-    // Try to load from state first
+  
     if (this.tryLoadFromState(postId)) {
       return;
     }
 
-    // Fetch from API if not in any state
+ 
     this.fetchPostFromApi(postId);
   }
 
-  /**
-   * Try to load post from state
-   */
+ 
   private tryLoadFromState(postId: number): boolean {
-    // Check new posts state first (newly created posts)
+   
     const newPost = this.apiClient.findInState<Post>(CACHE_KEYS.NEW_POSTS, postId);
     if (newPost) {
       this.post = newPost;
@@ -82,7 +77,7 @@ export class EditPostComponent implements OnInit {
       return true;
     }
 
-    // Check main posts state (existing posts)
+ 
     const existingPost = this.apiClient.findInState<Post>(CACHE_KEYS.POSTS, postId);
     if (existingPost) {
       this.post = existingPost;
@@ -94,9 +89,6 @@ export class EditPostComponent implements OnInit {
     return false;
   }
 
-  /**
-   * Fetch post from API
-   */
   private fetchPostFromApi(postId: number): void {
     this.apiClient.get<Post>(
       API_ENDPOINTS.getPost(postId),
@@ -121,9 +113,7 @@ export class EditPostComponent implements OnInit {
     });
   }
 
-  /**
-   * Validate form fields
-   */
+ 
   validateForm(): boolean {
     this.errors = {};
 
@@ -146,9 +136,7 @@ export class EditPostComponent implements OnInit {
     return Object.keys(this.errors).length === 0;
   }
 
-  /**
-   * Format error message
-   */
+
   private getErrorMessage(error: any): string {
     if (error.status === 0) {
       return 'Network error - please check your connection';
@@ -160,9 +148,7 @@ export class EditPostComponent implements OnInit {
     return error.message || 'An unexpected error occurred';
   }
 
-  /**
-   * Event Handlers
-   */
+
   onFieldChange(field: keyof Post): void {
     if (this.errors[field]) {
       delete this.errors[field];
@@ -178,7 +164,7 @@ export class EditPostComponent implements OnInit {
     this.isSubmitting = true;
     this.apiError = null;
 
-    // Prepare cache keys to invalidate
+ 
     const cacheKeysToInvalidate = [
       CACHE_KEYS.POSTS, 
       CACHE_KEYS.NEW_POSTS, 
@@ -197,25 +183,18 @@ export class EditPostComponent implements OnInit {
     });
   }
 
-  /**
-   * Handle successful post update
-   */
   private handleUpdateSuccess(updatedPost: Post): void {
-    // Update the post in both state stores if needed
+   
     if (this.apiClient.findInState(CACHE_KEYS.NEW_POSTS, updatedPost.id)) {
       this.apiClient.updateInState(CACHE_KEYS.NEW_POSTS, updatedPost);
     }
     
-    // Navigate back to posts list with refresh parameter
     this.isSubmitting = false;
     this.router.navigate(['/posts'], { 
       queryParams: { refresh: 'true' } 
     });
   }
 
-  /**
-   * Handle update error
-   */
   private handleUpdateError(error: any): void {
     this.apiError = this.getErrorMessage(error);
     this.isSubmitting = false;

@@ -1,4 +1,4 @@
-// src/app/models/auth.model.ts
+
 export interface User {
   id: number;
   username: string;

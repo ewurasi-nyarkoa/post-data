@@ -31,9 +31,9 @@ export class CreatePostComponent {
   errors: Record<string, string> = {};
   isSubmitting = false;
 
-  // Define state and cache keys
+
   private readonly POSTS_STATE_KEY = 'posts';
-  private readonly NEW_POSTS_STATE_KEY = 'new-posts'; // Separate state for newly created posts
+  private readonly NEW_POSTS_STATE_KEY = 'new-posts';
   private readonly CACHE_KEYS_TO_INVALIDATE = [
     'all-posts',
     'posts-page-1',
@@ -80,14 +80,14 @@ export class CreatePostComponent {
 
     this.isSubmitting = true;
 
-    // Generate a temporary ID for immediate UI update
+   
     const tempId = Math.floor(Math.random() * 1000000) * -1;
     const tempPost = {
       ...this.formData,
-      id: tempId // Temporary negative ID for optimistic UI update
+      id: tempId 
     };
 
-    // Optimistically update the state
+
     this.apiClient.addToState(this.NEW_POSTS_STATE_KEY, tempPost, true);
 
      this.apiClient.post<PostFormData, Post>(
@@ -98,11 +98,11 @@ export class CreatePostComponent {
       next: (newPost) => {
         console.log('Post created successfully:', newPost);
         
-        // Replace the temporary post with the real one from server
+  
         this.apiClient.removeFromState(this.NEW_POSTS_STATE_KEY, tempId);
         this.apiClient.addToState(this.NEW_POSTS_STATE_KEY, {
           ...newPost,
-          id: newPost.id || tempId // Fallback to tempId if API doesn't return one
+          id: newPost.id || tempId 
         }, true);
 
         this.isSubmitting = false;
@@ -111,7 +111,6 @@ export class CreatePostComponent {
       },
       error: (error) => {
         console.error('Error creating post:', error);
-        // Remove the temporary post if creation fails
         this.apiClient.removeFromState(this.NEW_POSTS_STATE_KEY, tempId);
         this.isSubmitting = false;
         this.errors['api'] = 'Failed to create post. Please try again.';

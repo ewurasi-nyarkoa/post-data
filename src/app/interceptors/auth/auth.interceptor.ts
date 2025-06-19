@@ -15,12 +15,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const token = this.authService.getToken();
     
-    // Clone the request and add the token
+ 
     const authReq = token ? req.clone({
       setHeaders: { Authorization: `Bearer ${token}` }
     }) : req;
     
-    // Pass the cloned request to the next handler
+   
     return next.handle(authReq).pipe(
       tap(event => {
         if (event instanceof HttpResponse) {

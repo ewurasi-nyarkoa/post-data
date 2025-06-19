@@ -1,6 +1,4 @@
-/**
- * API endpoint constants
- */
+
 export const API_ENDPOINTS = {
   POSTS: 'https://jsonplaceholder.typicode.com/posts',
   COMMENTS: 'https://jsonplaceholder.typicode.com/comments',
@@ -9,9 +7,7 @@ export const API_ENDPOINTS = {
   deletePost: (id: number) => `https://jsonplaceholder.typicode.com/posts/${id}`
 };
 
-/**
- * Cache key constants
- */
+
 export const CACHE_KEYS = {
   ALL_POSTS: 'all-posts',
   POSTS: 'posts',
@@ -23,11 +19,9 @@ export const CACHE_KEYS = {
   getCommentsKey: (postId: number) => `comments-${postId}`
 };
 
-/**
- * Cache duration constants (in milliseconds)
- */
+
 export const CACHE_DURATIONS = {
-  SHORT: 60000,      // 1 minute
-  MEDIUM: 300000,    // 5 minutes
-  LONG: 3600000      // 1 hour
+  SHORT: 60000,      
+  MEDIUM: 300000,    
+  LONG: 3600000      
 };
