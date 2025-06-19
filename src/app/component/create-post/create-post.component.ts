@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ApiClientService } from '../../service/post.service';
+import { ApiClientService } from '../../service/ApiClient.Service';
 import { Router } from '@angular/router';
 
 interface PostFormData {

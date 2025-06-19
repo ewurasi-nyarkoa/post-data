@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PostCardComponent } from '../post-card/post-card.component';
-import { ApiClientService } from '../../service/post.service';
+import { ApiClientService } from '../../service/ApiClient.Service';
 import { Post } from '../../models/post.interface';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { API_ENDPOINTS, CACHE_KEYS, CACHE_DURATIONS } from '../../models/api-constants';

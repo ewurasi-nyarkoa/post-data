@@ -119,7 +119,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { ApiClientService } from '../../service/post.service';
+import { ApiClientService } from '../../service/ApiClient.Service';
 import { Post, Comment } from '../../models/post.interface';
 
 @Component({
