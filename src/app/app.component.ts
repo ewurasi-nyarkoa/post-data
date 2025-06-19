@@ -1,30 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { OnInit } from '@angular/core';
-import { PostService } from './service/post.service';
 import { ListPostComponent } from './component/list-post/list-post.component';
+import { ApiClientService } from './service/post.service';
 import { Post } from './models/post.interface';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,ListPostComponent],
+  standalone: true,
+  imports: [RouterOutlet, ListPostComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-
   title = 'post-data';
-  posts:Post[]=[];
-  constructor(private myHttp:PostService) {}
+  posts: Post[] = [];
+  private readonly POSTS_STATE_KEY = 'posts';
 
-    ngOnInit() {
-      this.myHttp.getPosts().subscribe({next:(data)=>{
+  constructor(private apiClient: ApiClientService) {}
+
+  ngOnInit() {
+    this.loadPosts();
+  }
+
+  private loadPosts(): void {
+    this.apiClient.get<Post[]>(
+      'https://jsonplaceholder.typicode.com/posts',
+      { 
+        key: 'all-posts', 
+        duration: 3600000 // Cache for 1 hour
+      }
+    ).subscribe({
+      next: (data) => {
         this.posts = data;
-        console.log(data);
-        
+       
       },
-    error:(error)=>{
-      console.error('Error fetching posts:', error);
-    }})
+      error: (error) => {
+       
+      }
+    });
   }
 }
