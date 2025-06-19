@@ -1,1 +1,98 @@
-<p>edit-post works!</p>
+<div class="edit-post">
+  @if (isLoading) {
+    <div class="edit-post__loading">
+      <div class="edit-post__spinner"></div>
+      <p>Loading post...</p>
+    </div>
+  }
+
+  @if (!isLoading) {
+    <div class="edit-post__container">
+      <div class="edit-post__header">
+        <button (click)="cancel()" class="edit-post__back-btn">
+          <svg class="edit-post__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span>Back to Posts</span>
+        </button>
+        <h1 class="edit-post__title">Edit Post</h1>
+      </div>
+
+      <!-- <app-error-message [error]="apiError"></app-error-message> -->
+
+      <form #postForm="ngForm" (ngSubmit)="onSubmit(postForm)" class="edit-post__form">
+        <div class="edit-post__form-group">
+          <label for="title" class="edit-post__label">Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            [(ngModel)]="post.title"
+            (ngModelChange)="onFieldChange('title')"
+            class="edit-post__input"
+            [class.edit-post__input--error]="errors['title']"
+            placeholder="Enter post title"
+          />
+          @if (errors['title']) {
+            <p class="edit-post__error-text">{{ errors['title'] }}</p>
+          }
+        </div>
+
+        <div class="edit-post__form-group">
+          <label for="body" class="edit-post__label">Content</label>
+          <textarea
+            id="body"
+            name="body"
+            [(ngModel)]="post.body"
+            (ngModelChange)="onFieldChange('body')"
+            class="edit-post__textarea"
+            [class.edit-post__textarea--error]="errors['body']"
+            placeholder="Enter post content"
+            rows="6"
+          ></textarea>
+          @if (errors['body']) {
+            <p class="edit-post__error-text">{{ errors['body'] }}</p>
+          }
+        </div>
+
+        <div class="edit-post__form-group">
+          <label for="userId" class="edit-post__label">User ID</label>
+          <input
+            type="number"
+            id="userId"
+            name="userId"
+            [(ngModel)]="post.userId"
+            (ngModelChange)="onFieldChange('userId')"
+            class="edit-post__input"
+            [class.edit-post__input--error]="errors['userId']"
+            placeholder="Enter user ID"
+          />
+          <!-- @if (errors['userId']) {
+            <p class="edit-post__error-text">{{ errors['userId'] }}</p>
+          } -->
+        </div>
+
+        <div class="edit-post__actions">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="edit-post__cancel-btn"
+            [disabled]="isSubmitting">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="edit-post__submit-btn"
+            [disabled]="isSubmitting">
+            @if (isSubmitting) {
+              <div class="edit-post__spinner"></div>
+              <span>Saving...</span>
+            } @else {
+              Save Changes
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

@@ -1,0 +1,30 @@
+
+@if (totalPages > 1) {
+  <div class="pagination-nav">
+    <button 
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="pagination-btn"
+    >
+      Prev
+    </button>
+    
+    @for (page of pages; track page) {
+      <button 
+        (click)="changePage(page)"
+        [class.active]="page === currentPage"
+        class="pagination-btn"
+      >
+        {{ page }}
+      </button>
+    }
+    
+    <button 
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="pagination-btn"
+    >
+      Next
+    </button>
+</div>
+}

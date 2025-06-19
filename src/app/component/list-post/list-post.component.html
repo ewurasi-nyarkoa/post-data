@@ -76,10 +76,10 @@
       (edit)="onEditPost($event)"
       (delete)="onDeletePost($event)">
     </app-post-card>
-  </div>
+  </div> 
 
  
-  <div *ngIf="!isLoading && posts.length > 0" class="post-list__stats">
+   <!-- <div *ngIf="!isLoading && posts.length > 0" class="post-list__stats"> 
     <div class="post-list__stats-grid">
       <div class="post-list__stat">
         <div class="post-list__stat-number post-list__stat-number--primary">
@@ -100,5 +100,11 @@
         <div class="post-list__stat-label">Filtered Results</div>
       </div>
     </div>
-  </div>
+  </div>  -->
+<app-pagination
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage"
+  (pageChange)="onPageChange($event)">
+</app-pagination>
 </div>
