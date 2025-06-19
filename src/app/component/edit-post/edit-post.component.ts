@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiClientService } from '../../service/post.service';
+import { ApiClientService } from '../../service/ApiClient.Service';
 import { Post } from '../../models/post.interface';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { API_ENDPOINTS, CACHE_KEYS, CACHE_DURATIONS } from '../../models/api-constants';

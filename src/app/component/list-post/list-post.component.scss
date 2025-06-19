@@ -108,6 +108,25 @@
   }
 
 
+
+  .post-list__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.post-list__auth-btn {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.post-list__auth-btn:hover {
+  background-color: #e0e0e0;
+}
+
+
   &__loading {
     display: flex;
     flex-direction: column;

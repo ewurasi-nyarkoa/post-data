@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ListPostComponent } from './component/list-post/list-post.component';
-import { ApiClientService } from './service/post.service';
+import { ApiClientService } from './service/ApiClient.Service';
 import { Post } from './models/post.interface';
 
 @Component({

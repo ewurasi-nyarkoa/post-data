@@ -4,15 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PostCardComponent } from '../post-card/post-card.component';
-import { ApiClientService } from '../../service/post.service';
+import { ApiClientService } from '../../service/ApiClient.Service';
 import { Post } from '../../models/post.interface';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { API_ENDPOINTS, CACHE_KEYS, CACHE_DURATIONS } from '../../models/api-constants';
+import { LoginComponent } from "../login/login.component";
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-list-post',
   standalone: true,
-  imports: [CommonModule, FormsModule, PostCardComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule, PostCardComponent, PaginationComponent, LoginComponent],
   templateUrl: './list-post.component.html',
   styleUrls: ['./list-post.component.scss']
 })
@@ -33,7 +35,8 @@ export class ListPostComponent implements OnInit, OnDestroy {
   constructor(
     private apiClient: ApiClientService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -178,4 +181,15 @@ export class ListPostComponent implements OnInit, OnDestroy {
   trackByPostId(index: number, post: Post): number {
     return post.id;
   }
+
+  login(): void {
+  // For simplicity, directly log in with hardcoded credentials
+  this.authService.login('admin', 'password').subscribe({
+    next: () => console.log('Logged in successfully')
+  });
+}
+
+logout(): void {
+  this.authService.logout();
+}
 }
