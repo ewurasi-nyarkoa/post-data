@@ -5,8 +5,15 @@
       <h1 class="post-list__title">Posts</h1>
       <p class="post-list__subtitle">Manage and organize your posts</p>
     </div>
+
+     <button 
+      class="post-list__auth-btn"
+      (click)="authService.isLoggedIn() ? logout() : login()">
+      {{ authService.isLoggedIn() ? 'Logout' : 'Login' }}
+    </button>
     
     <button 
+      *ngIf="authService.isLoggedIn()"
       class="post-list__create-btn"
       (click)="onCreateNew()">
       <svg class="post-list__create-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,6 +22,7 @@
       <span>New Post</span>
     </button>
   </div>
+
 
 
   <div class="post-list__search">
@@ -107,4 +115,6 @@
   [currentPage]="currentPage"
   (pageChange)="onPageChange($event)">
 </app-pagination>
+
+<app-login></app-login>
 </div>
